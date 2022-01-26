@@ -1,0 +1,53 @@
+function [a,b] = linealizacion(x,y,n,k)
+%{
+Joel Quintuna
+x,y1: valores de x y f(x) con los cuales se desea obtener la aproximacion
+lineal
+k:variable de tipo string que indica el tipo de funcion a analizar (e=exponencial,rc=razon de cambio,p=potencias)
+a y b1:  coeficientes necesarios para armar la recta que sera la
+aproximacion lineal de la funcion a analizar.(lny=lna+b1x)
+%}
+sx=0;%suma de X1
+sy=0;%suma de Y1
+sxy=0;%suma de x1*y
+sx2=0;% suma de x(2)
+%bulcle para las sumas consecutivas
+for i=1:n
+    switch k
+        case 'e'
+            x1=x(i);
+            y1=log(x(i));
+        case 'rc'
+            x1=log10(x(i)); %se clasifica el tipo de ecuacion a tratar, exponencial,razon de cambio o potencias
+            y1=log(y(i));
+        case 'p'
+            x1=log10(x(i));
+            y1=log10(y(i));
+        otherwise
+            error('Linealizacion: el caso ingresado no es posible por este metodo'); % si la letra ingresada no esta entre los casos contemplados se 
+                                                        %emitira un mensaje
+                                                        %de error 
+    end
+    sx=sx+x1;
+    sy=sy+y1;
+    sxy=sxy+(x1*y1);
+    sx2=sx2+(x1)^2;
+end
+xp=sx/n;
+yp=sy/n;
+
+%variables  auxiliares que guardan el valor preliminar de a y b
+aux1=(n*sxy-sx*sy)/(n*sx2-(sx^2));
+aux2=yp-aux1*xp;
+switch k
+    case 'e'
+        a=exp(aux2);% calculo de a y b segun el caso
+        b=aux1;
+    case 'rc'
+        a=10^aux2;
+        b=aux1;
+    case 'p'
+        a=1/aux2;
+        b=aux1*a;
+
+end
