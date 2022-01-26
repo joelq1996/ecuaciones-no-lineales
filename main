@@ -1,0 +1,11 @@
+f= @(x) (1/2)*exp((3/4)*x);%funcion
+x=1:0.1:5;%rango de valores 
+y1=f(x);%valores para y
+n=length(x);%tamano de x
+k='e';
+try
+    [a,b]=linealizacion(x,y1,n,k);
+    fprintf('Coeficientes para linealizacion %d %d',a,b);
+catch err
+    fprintf('error :%s\n',err.message);
+end
